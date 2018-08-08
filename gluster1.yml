@@ -9,3 +9,18 @@
       username: "{{username}}"
       password: "{{password}}"
       pool_ids: 8a85f9815bb07800015bb08404d71143
+  - name: Disable all repositories except rhel-7-server-rpms
+    rhsm_repository:
+      name: '*'
+      state: disabled
+  - name: Enable all repositories starting with rhel-7-server
+    rhsm_repository:
+      name: rhel-7-server-rpms
+      state: enabled
+  - name: Enable all repositories starting with rhel-gluster
+    rhsm_repository:
+      name: rh-gluster-3-for-rhel-7-server-rpms
+      state: enabled
+  - yum:
+      name: '*'
+      state: latest
