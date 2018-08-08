@@ -1,0 +1,11 @@
+---
+- hosts: test
+  vars_files:
+    - vault.yml
+  tasks:
+  - name: Same as above but subscribe to a specific pool by ID.
+    redhat_subscription:
+      state: present
+      username: "{{username}}"
+      password: "{{password}}"
+      pool_ids: 8a85f9815bb07800015bb08404d71143
