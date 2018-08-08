@@ -21,6 +21,33 @@
     rhsm_repository:
       name: rh-gluster-3-for-rhel-7-server-rpms
       state: enabled
-  - yum:
+  - name: System update
+    yum:
       name: '*'
       state: latest
+# need to add reboot
+  - name: install redhat storage server
+    yum:
+      name:  redhat-storage-server
+      state: latest
+# need to add reboot
+  - name: Restart service firewalld and enabled, in all cases
+    service:
+      name: firewalld
+      state: restarted
+      enabled: yes 
+  - name: Restart service gluster and enabled, in all cases
+    service:
+      name: glusterd
+      state: restarted
+      enabled: yes
+  - firewalld:
+      service: glusterfs
+      permanent: true
+      state: enabled
+  - firewalld:
+      port: 5667/tcp
+      permanent: true
+      state: enabled
+  - name: Reload firewalld
+    command: "firewall-cmd --reload"
