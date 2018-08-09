@@ -1,5 +1,5 @@
 ---
-- hosts: test
+- hosts: ansi_gluster
   vars_files:
     - vault.yml
   tasks:
@@ -26,11 +26,29 @@
       name: '*'
       state: latest
 # need to add reboot
+  - name: Reboot system
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+  - name: Wait for system to become reachable
+    wait_for_connection:
+      delay: 5
+      timeout: 300
+      connect_timeout: 20
   - name: install redhat storage server
     yum:
       name:  redhat-storage-server
       state: latest
 # need to add reboot
+  - name: Reboot system
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+  - name: Wait for system to become reachable
+    wait_for_connection:
+      delay: 5
+      timeout: 300
+      connect_timeout: 20
   - name: Restart service firewalld and enabled, in all cases
     service:
       name: firewalld
