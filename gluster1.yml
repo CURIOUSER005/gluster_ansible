@@ -1,5 +1,5 @@
 ---
-- hosts: ansi_gluster
+- hosts: ansi_g
   vars_files:
     - vault.yml
   tasks:
@@ -69,3 +69,41 @@
       state: enabled
   - name: Reload firewalld
     command: "firewall-cmd --reload"
+# Disk 
+  - name: Create a PV disk 
+    lvg:
+      pvs: /dev/sdb
+      vg: vg1
+  - name: create Thinkpool
+    lvol:
+      vg: vg1
+      thinpool: lvpool
+      size: 5g
+  - name: Create lvm
+    lvol:
+      vg: vg1
+      lv: lv1
+      thinpool: lvpool
+      size: 1g
+  - name: Create a exf filesystem on lv1
+    filesystem:
+      fstype: xfs
+      dev: /dev/vg1/lv1
+#  - name: Create Dir Brick
+#    file:
+#      path: /brick
+#      state: 
+#      mode: 0755
+  - name: mount 
+    mount:
+      path: /mnt/brick
+      src: /dev/vg1/lv1
+      fstype: xfs
+      state: mounted
+      backup: no
+      boot: yes
+  - name: Create dir inside mnt point
+    file:
+      path: /mnt/brick/brick1
+      state: directory
+      mode: 0775
