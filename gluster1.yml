@@ -107,3 +107,40 @@
       path: /mnt/brick/brick1
       state: directory
       mode: 0775
+
+- hosts: master
+  tasks:
+  - name: Create a trusted storage pool
+    gluster_peer:
+      state: present
+      nodes:
+      - glue2
+
+  - name: Create volume
+    gluster_volume:
+      state: present
+      name: Vol1
+      bricks: /mnt/brick/brick1
+      replicas: 2
+      cluster:
+        - glue1
+        - glue2
+    run_once: true
+  - name: start gluster volume
+    gluster_volume:
+      state: started
+      name: Vol1
+  - name: Create dir inside mnt point
+    file:
+      path: /gluster_vol
+      state: directory
+      mode: 0775
+  - name: Mounting Vol
+    mount:
+      src: glue1:/Vol1
+      path: /gluster_vol
+      fstype: glusterfs
+      opts: _netdev
+      state: mounted
+      backup: no
+      boot: yes
