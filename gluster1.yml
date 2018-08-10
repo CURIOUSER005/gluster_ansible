@@ -107,6 +107,16 @@
       path: /mnt/brick/brick1
       state: directory
       mode: 0775
+  - name: Reboot system
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+  - name: Wait for system to become reachable
+    wait_for_connection:
+      delay: 5
+      timeout: 300
+      connect_timeout: 20
+
 
 - hosts: master
   tasks:
